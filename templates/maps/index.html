@@ -1,0 +1,74 @@
+<!doctype html>
+<html>
+<head>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<script src="http://maps.google.com/maps/api/js?sensor=false"></script>
+<script>
+var map;
+function initialize() {
+    map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 5,
+        center: new google.maps.LatLng(-6.158497, 106.747054),
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+    });
+    {% for mark in location %}
+        //console.log('{{mark.geometry.y}}');
+        {% if mark.geometry.x and mark.geometry.y %}
+        var latlng = new google.maps.LatLng({{mark.geometry.x}}, {{mark.geometry.y}});
+        console.log(latlng);
+        var marker{{ forloop.counter }} = new google.maps.Marker({
+            position: latlng,
+            map: map,
+            title: '{{mark}}'
+        });
+
+        var content = '<h1>{{mark.title_slug}}</h1><p><a href="{{mark.url}}">Click Here</a></p>';
+        var infowindow{{ forloop.counter }} = new google.maps.InfoWindow({
+            content: '{{mark.title_slug}}'
+        });
+
+        // for info baloon
+        google.maps.event.addListener(marker{{ forloop.counter }}, 'click', function(){
+            infowindow{{ forloop.counter }}.open(map, marker{{ forloop.counter }});
+
+        });
+
+        {% endif %}
+    {% endfor %}
+
+    {% for mark in travel %}
+        //console.log('{{mark.geometry.y}}');
+        {% if mark.geometry.x and mark.geometry.y %}
+        var latlng = new google.maps.LatLng({{mark.geometry.x}}, {{mark.geometry.y}});
+        console.log(latlng);
+        var marker{{ forloop.counter }} = new google.maps.Marker({
+            position: latlng,
+            map: map,
+            title: '{{mark}}'
+        });
+
+        var content = '<h1>{{mark.title_slug}}</h1><p><a href="{{mark.url}}">Click Here</a></p>';
+        var infowindow{{ forloop.counter }} = new google.maps.InfoWindow({
+            content: '<a href="http://travel.okezone.com/read/2011/11/28/408/535298/menikmati-sunset-di-sungai-batanghari" target="_blank">{{mark.title_slug}}</a>'
+        });
+
+        // for info baloon
+        google.maps.event.addListener(marker{{ forloop.counter }}, 'click', function(){
+            infowindow{{ forloop.counter }}.open(map, marker{{ forloop.counter }});
+
+        });
+
+        {% endif %}
+    {% endfor %}
+}
+</script>
+<style>
+    body {font-family: sans-serif}
+    #map {width: 1000px; height: 550px}
+</style>
+</head>
+<body onload='initialize()'>
+<h1>OkeFood & Travel Location</h1>
+    <div id="map"></div>
+</body>
+</html>
